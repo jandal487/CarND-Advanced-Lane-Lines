@@ -249,7 +249,7 @@ def visualize_sliding_windows(binary_warped,left_fit,right_fit,out_img):
     return out_img
 
 # Alternative solution to sliding windows
-def get_smooth_lanes(binary_warped, margin, left_fit, right_fit):
+def visualize_smooth_lanes(binary_warped, margin, left_fit, right_fit):
     # HYPERPARAMETER
     # Choose the width of the margin around the previous polynomial to search
     # The quiz grader expects 100 here, but feel free to tune on your own!
