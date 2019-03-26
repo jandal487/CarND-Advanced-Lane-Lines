@@ -230,11 +230,7 @@ def make_sliding_windows(binary_warped):
     return left_fit,right_fit,left_lane_inds,right_lane_inds,out_img
 
 # View Sliding windows
-def visualize_sliding_windows(binary_warped):
-    # Find our lane pixels first
-    #leftx, lefty, rightx, righty, out_img = find_lane_pixels(binary_warped)
-    left_fit,right_fit,left_lane_inds,right_lane_inds,out_img = make_sliding_windows(binary_warped)
-
+def visualize_sliding_windows(binary_warped,left_fit,right_fit,out_img):
     # Generate x and y values for plotting
     ploty = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0] )
     try:
@@ -245,14 +241,15 @@ def visualize_sliding_windows(binary_warped):
         print('The function failed to fit a line!')
         left_fitx = 1*ploty**2 + 1*ploty
         right_fitx = 1*ploty**2 + 1*ploty
-
-    ## Visualization ##
-    plt.imshow(out_img)
+		
+	## Visualization ##
     plt.plot(left_fitx, ploty, color='yellow')
     plt.plot(right_fitx, ploty, color='yellow')
+    
+    return out_img
 
 # Alternative solution to sliding windows
-def get_smooth_lanePixels(binary_warped, margin, left_fit, right_fit):
+def get_smooth_lanes(binary_warped, margin, left_fit, right_fit):
     # HYPERPARAMETER
     # Choose the width of the margin around the previous polynomial to search
     # The quiz grader expects 100 here, but feel free to tune on your own!
@@ -281,12 +278,15 @@ def get_smooth_lanePixels(binary_warped, margin, left_fit, right_fit):
     righty = nonzeroy[right_lane_inds]
 
     # Fit new polynomials
-    left_fitx, right_fitx, ploty = fit_polygon(binary_warped, leftx, lefty, rightx, righty)
+    #left_fitx, right_fitx, ploty = fit_poly(binary_warped.shape, leftx, lefty, rightx, righty)
+    left_fit = np.polyfit(lefty, leftx, 2)
+    right_fit = np.polyfit(righty, rightx, 2)
+    img_shape = binary_warped.shape
+    ploty = np.linspace(0, img_shape[0]-1, img_shape[0])
+    left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
+    right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
     
-    return left_lane_inds, right_lane_inds, nonzerox, nonzeroy, left_fitx, right_fitx, ploty
-
-def visualize_smooth_lanePixels(binary_warped, margin, left_lane_inds, right_lane_inds, 
-								nonzerox, nonzeroy, left_fitx, right_fitx, ploty):
+    ## Visualization ##
     # Create an image to draw on and an image to show the selection window
     out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
     window_img = np.zeros_like(out_img)
@@ -313,6 +313,7 @@ def visualize_smooth_lanePixels(binary_warped, margin, left_lane_inds, right_lan
     # Plot the polynomial lines onto the image
     plt.plot(left_fitx, ploty, color='yellow')
     plt.plot(right_fitx, ploty, color='yellow')
+    ## End visualization steps ##
     
     return result
 	
