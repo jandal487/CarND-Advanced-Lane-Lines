@@ -84,17 +84,37 @@ def dir_threshold(img, sobel_kernel=3, thresh=(0, np.pi/2)):
     # 6) Return this mask as your binary_output image
     return binary_output
 
-# Combining all thresholds defined above
-def combining_all_thresholds(original_image):
-	gradx = abs_sobel_thresh(original_image, orient='x', thresh_min=20, thresh_max=100)
-	grady = abs_sobel_thresh(original_image, orient='y', thresh_min=20, thresh_max=100)
-	mag_binary = mag_thresh(original_image, sobel_kernel=5, mag_thresh=(20, 100))
-
-	combined = np.zeros_like(mag_binary)
-	combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1))] = 1
+# Combining thresholds: The code is taken from lessons
+def get_binarized(original_image):
+	# Convert to HLS color space and separate the S channel
+	# Note: img is the undistorted image
+	hls = cv2.cvtColor(original_image, cv2.COLOR_RGB2HLS)
+	s_channel = hls[:,:,2]
 	
-	return combined
+	gray = cv2.cvtColor(original_image, cv2.COLOR_RGB2GRAY)
+	# Sobel x
+	sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0) # Take the derivative in x
+	abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
+	scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
+	
+	# Threshold x gradient
+	thresh_min = 20
+	thresh_max = 100
+	sxbinary = np.zeros_like(scaled_sobel)
+	sxbinary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
+	
+	# Threshold color channel
+	s_thresh_min = 170
+	s_thresh_max = 255
+	s_binary = np.zeros_like(s_channel)
+	s_binary[(s_channel >= s_thresh_min) & (s_channel <= s_thresh_max)] = 1
 
+	# Combine the two binary thresholds
+	combined_binary = np.zeros_like(sxbinary)
+	combined_binary[(s_binary == 1) | (sxbinary == 1)] = 1
+	
+	return combined_binary
+	
 # Define a function that thresholds the S-channel of HLS
 # Use exclusive lower bound (>) and inclusive upper (<=)
 def hls_select(img, thresh=(0, 255)):
