@@ -81,7 +81,7 @@ This resulted in the following source and destination points:
 | 400, 600      | 200, 650        | 
 | 980, 600      | 1100, 650      |
 | 815, 500     | 1100, 20      |
-| 550, 500      | 200, 0        |
+| 550, 500      | 200, 20        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image. The resulting image is also show in 'Code cell # 13' of `Stage1_Pipeline_a.ipynb.ipynb` notebook.
 
