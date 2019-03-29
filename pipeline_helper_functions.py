@@ -269,7 +269,7 @@ def visualize_sliding_windows(binary_warped,left_fit,right_fit,out_img):
     return out_img
 
 # Alternative solution to sliding windows
-def visualize_smooth_lanes(binary_warped, margin, left_fit, right_fit):
+def get_smooth_lanes(binary_warped, margin, left_fit, right_fit):
     # HYPERPARAMETER
     # Choose the width of the margin around the previous polynomial to search
     # The quiz grader expects 100 here, but feel free to tune on your own!
@@ -330,12 +330,13 @@ def visualize_smooth_lanes(binary_warped, margin, left_fit, right_fit):
     cv2.fillPoly(window_img, np.int_([right_line_pts]), (0,255, 0))
     result = cv2.addWeighted(out_img, 1, window_img, 0.3, 0)
     
-    # Plot the polynomial lines onto the image
+    return result, left_fitx, right_fitx, ploty
+	
+def visualize_smooth_lanes(left_fitx, right_fitx, ploty):
+	# Plot the polynomial lines onto the image
     plt.plot(left_fitx, ploty, color='yellow')
     plt.plot(right_fitx, ploty, color='yellow')
     ## End visualization steps ##
-    
-    return result
 	
 def unwarp_image(binary_warped, original_image, src, dst, left_fit, right_fit):
     # Calculate inverse perspective transform
