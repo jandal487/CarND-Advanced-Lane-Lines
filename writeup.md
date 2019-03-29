@@ -117,5 +117,5 @@ Here's a [link to my video result](/output_videos/project_video.mp4)
  - However, after observing challenge videos, I have many things to improve in my code. I will work now on these things to get accuracte results:
      * I should find a solution to get src and dst values programatically instead of trying different hard coded values. As with hard coded src & dst points, I will certainly face glitches at some point of the video.
      * I should also debug my `get_binarized()` function and observe where it is not able to detect lanes properly. I should also consider the effect of shades, bright light, as it can be seen in hard challenge that the result goes totally wrong at certain locations.
-     * I should have followed the tip provided in the lesson to track previous points using the Line() class. This should help when there is a huge curve and keep the car right on the track all the time. I will implement it now to improve my results.
+     * I should have followed the tip provided in the lesson to track previous points using the Line() class. This should help when there is a huge curve and achieve right lane tracking all time. I will implement it now to improve my results.
          
