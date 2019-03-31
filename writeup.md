@@ -61,6 +61,9 @@ The code for this step is contained in 2 notebooks to show results clearly. The 
 
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images as shown in `Code cell # 3` of `Stage1_Pipeline_a.ipynb.ipynb` notebook. 
 
+One example image is shown here:
+![GitHub Logo](/output_images/test_img_undistorted_6.jpg)
+
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 Following the example in lessons, I created a function by the name of `get_binarized()`. It can be found in `pipeline_helper_functions.py` at `line # 88` and can also be found in `Code cell # 8` of `Stage1_Pipeline_a.ipynb.ipynb`. The resulting image is also show in `Code cell # 8` of `Stage1_Pipeline_a.ipynb.ipynb` notebook.
@@ -70,18 +73,18 @@ Following the example in lessons, I created a function by the name of `get_binar
 The code for my perspective transform includes a function called `WarpPerspective()`, which appears at `lines 159 through 163` in the file `pipeline_helper_functions.py` (or, for example, in the `2nd last code cell` of `Stage1_Pipeline_a.ipynb.ipynb` notebook).  The `WarpPerspective()` function takes as inputs an image (`combined_img`), as well as source (`src`) and destination (`dst`) points.  I tried several src and dst values and finally hard coded these values:
 
 ```python
-src = np.float32([[400, 600], [980, 600], [815, 500], [550, 500]])
-dst = np.float32([[200, 650], [1100, 650], [1100, 20], [200, 20]])
+src = np.float32([[550, 470], [760, 470], [1125, 670], [200, 670]])
+dst = np.float32([[10, 10], [1200, 10], [1200, 700], [10, 700]])
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 400, 600      | 200, 650        | 
-| 980, 600      | 1100, 650      |
-| 815, 500     | 1100, 20      |
-| 550, 500      | 200, 20        |
+| 550, 470      | 10, 10        | 
+| 760, 470      | 1200, 10      |
+| 1125, 670     | 1200, 700      |
+| 200, 670      | 10, 700        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image. The resulting image is also show in 'Code cell # 13' of `Stage1_Pipeline_a.ipynb.ipynb` notebook.
 
@@ -113,9 +116,6 @@ Here's a [link to my video result](https://github.com/jandal487/CarND-Advanced-L
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
- - I am statisfied by the performance of my pipeline on `project_video.mp4`. The output video is quite accurate.
- - However, after observing challenge videos, I have many things to improve in my code. I will work now on these things to get accuracte results:
-     * I should find a solution to get src and dst values programatically instead of trying different hard coded values. As with hard coded src & dst points, I will certainly face glitches at some point of the video.
-     * I should also debug my `get_binarized()` function and observe where it is not able to detect lanes properly. I should also consider the effect of shades, bright light, as it can be seen in hard challenge that the result goes totally wrong at certain locations.
-     * I should have followed the tip provided in the lesson to track previous points using the Line() class. This should help when there is a huge curve and achieve right lane tracking all time. I will implement it now to improve my results.
-         
+ - It is very difficult to solve challenge videos, especially, when there are sharp turns. I will spend more time on them and come up with separate 4 source points for each of the videos.
+ - Now, the project video is very accurate. However, I have still some things to improve in my code. I should apply smoothing between frame changes so that the projection is smooth and stable. I should also spend more time on color spaces and find a better function to get detect yellow, white lanes in different contrast, light and dark images. 
+ - Since this project is heuristic based, as we have to find right src points and hard code them in the algorithm, so overall the project has been very time consuming.
