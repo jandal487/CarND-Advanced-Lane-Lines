@@ -17,6 +17,14 @@ def plot_the_result(original_image, result_img, t1="Original Image", t2="Thresho
     ax2.imshow(result_img)
     ax2.set_title(t2, fontsize=30)
     plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+	
+# Calculate dst 4 points, considering offset, height & width of image
+def get_dst(offset=20, w=1200, h=700):
+    dst = np.float32([[offset, offset],
+                      [w-offset, offset],
+                      [w-offset, h-offset],
+                      [offset, h-offset]])
+    return dst
 
 # Get undistorted image
 def undistorted_img(original_image, mtx, dist):
@@ -91,8 +99,8 @@ def get_binarized(original_image):
 	hls = cv2.cvtColor(original_image, cv2.COLOR_RGB2HLS)
 	s_channel = hls[:,:,2]
 	
-	gray = cv2.cvtColor(original_image, cv2.COLOR_RGB2GRAY)
 	# Sobel x
+	gray = cv2.cvtColor(original_image, cv2.COLOR_RGB2GRAY)
 	sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0) # Take the derivative in x
 	abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
 	scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
@@ -114,6 +122,51 @@ def get_binarized(original_image):
 	combined_binary[(s_binary == 1) | (sxbinary == 1)] = 1
 	
 	return combined_binary
+	
+def get_comb_binarized(original_image):
+    """
+    Convert image to HSV color space and suppress any colors
+    outside of the defined color ranges
+    """
+    hsv = cv2.cvtColor(original_image, cv2.COLOR_RGB2HSV)
+    yellow_dark = np.array([15, 127, 127], dtype=np.uint8)
+    yellow_light = np.array([25, 255, 255], dtype=np.uint8)
+    yellow_range = cv2.inRange(hsv, yellow_dark, yellow_light)
+
+    white_dark = np.array([0, 0, 200], dtype=np.uint8)
+    white_light = np.array([255, 30, 255], dtype=np.uint8)
+    white_range = cv2.inRange(hsv, white_dark, white_light)
+    yellows_or_whites = yellow_range | white_range
+    color_binary = cv2.bitwise_and(hsv, hsv, mask=yellows_or_whites)
+    color_binary = cv2.cvtColor(color_binary, cv2.COLOR_RGB2GRAY)
+    # Threshold color_binary
+    c_thresh = [20,100]
+    c_binary = np.zeros_like(color_binary)
+    c_binary[(color_binary >= c_thresh[0]) & (color_binary <= c_thresh[1])] = 1
+    
+    # Saturation channel
+    hls = cv2.cvtColor(original_image, cv2.COLOR_RGB2HLS)
+    s_channel = hls[:,:,2]
+    # Threshold s channel
+    s_thresh = [170,255]
+    s_binary = np.zeros_like(s_channel)
+    s_binary[(s_channel >= s_thresh[0]) & (s_channel <= s_thresh[1])] = 1
+
+    # Sobel x
+    gray = cv2.cvtColor(original_image, cv2.COLOR_RGB2GRAY)
+    sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0) # Take the derivative in x
+    abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
+    scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
+    # Threshold x gradient
+    sx_thresh = [20,100]
+    sx_binary = np.zeros_like(scaled_sobel)
+    sx_binary[(scaled_sobel >= sx_thresh[0]) & (scaled_sobel <= sx_thresh[1])] = 1
+
+    # Combine the two binary thresholds
+    combined_binary = np.zeros_like(sx_binary)
+    combined_binary[(c_binary == 1) | (s_binary == 1) | (sx_binary == 1)] = 1
+    
+    return combined_binary
 	
 # Define a function that thresholds the S-channel of HLS
 # Use exclusive lower bound (>) and inclusive upper (<=)
