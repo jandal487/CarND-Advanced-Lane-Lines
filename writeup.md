@@ -125,6 +125,7 @@ Here's a [link to my video result](https://github.com/jandal487/CarND-Advanced-L
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
- - It is very difficult to solve challenge videos, especially, when there are sharp turns. I will spend more time on them and come up with separate 4 source points for each of the videos.
- - Now, the project video is very accurate. However, I have still some things to improve in my code. I should apply smoothing between frame changes so that the projection is smooth and stable. I should also spend more time on color spaces and find a better function to get detect yellow, white lanes in different contrast, light and dark images. 
- - Since this project is heuristic based, as we have to find right src points and hard code them in the algorithm, so overall the project has been very time consuming.
+ - It is very difficult to solve challenge videos, especially, when there are sharp turns. Currently, result of challenge videos is not satisfactory. I will spend more time on them and come up with accurate solutions.
+ - The project video is very accurate. However, I have still few things to improve in my code. I should apply smoothing between frame changes so that the result is smooth and stable. 
+  - I should also spend more time on color spaces and find a better function to get detect yellow, white lanes in different contrast, light and dark images. 
+ - Since this project is heuristic based, as we have to find right src points and hard code them in the algorithm, so overall the project has been very time consuming. However, it has been very interesting, especially, the last review was very helpful to improve my results. 
