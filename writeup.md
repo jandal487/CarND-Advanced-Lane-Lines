@@ -66,11 +66,14 @@ One example image is shown here:
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-Following the example in lessons, I created a function by the name of `get_binarized()`. It can be found in `pipeline_helper_functions.py` at `line # 88` and can also be found in `Code cell # 8` of `Stage1_Pipeline_a.ipynb.ipynb`. The resulting image is also show in `Code cell # 8` of `Stage1_Pipeline_a.ipynb.ipynb` notebook.
+Following the example in lessons, I created a function by the name of `get_comb_color_binarized()`. It can be found in `pipeline_helper_functions.py` at `line # 126` and can also be found in `Code cell # 8` of `Stage1_Pipeline_a.ipynb.ipynb`. The resulting image is also show in `Code cell # 8` of `Stage1_Pipeline_a.ipynb.ipynb` notebook.
+
+One example image is shown here:
+![GitHub Logo](/output_images/test_img_combined_img_6.jpg)
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `WarpPerspective()`, which appears at `lines 159 through 163` in the file `pipeline_helper_functions.py` (or, for example, in the `2nd last code cell` of `Stage1_Pipeline_a.ipynb.ipynb` notebook).  The `WarpPerspective()` function takes as inputs an image (`combined_img`), as well as source (`src`) and destination (`dst`) points.  I tried several src and dst values and finally hard coded these values:
+The code for my perspective transform includes a function called `WarpPerspective()`, which appears at `lines 208 through 212` in the file `pipeline_helper_functions.py` (or, for example, in the `2nd last code cell` of `Stage1_Pipeline_a.ipynb.ipynb` notebook).  The `WarpPerspective()` function takes as inputs an image (`combined_img`), as well as source (`src`) and destination (`dst`) points.  I tried several src and dst values and finally hard coded these values:
 
 ```python
 src = np.float32([[550, 470], [760, 470], [1125, 670], [200, 670]])
@@ -88,17 +91,23 @@ This resulted in the following source and destination points:
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image. The resulting image is also show in 'Code cell # 13' of `Stage1_Pipeline_a.ipynb.ipynb` notebook.
 
+One example image is shown here:
+![GitHub Logo](/output_images/test_img_wrapPerspective_6.jpg)
+
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-The line detection code could be found at `Code cell # 6, 7 & 8` of `Stage1_Pipeline_b.ipynb.ipynb` notebook. I implemented sliding windows algorithm and then implemented (alternative approach), smooth lanes detection algorithm. Sliding windows algorithm calculates the histogram on the X axis. Finds the picks on the right and left side of the image, and collect the non-zero points contained on those windows. I am using static values for left_fit & right_fit (found for example), for later use in the notebook, since it is the same example image through out the notebook. When all the points are collected, a second order polynomial is fitted, using `np.polyfit`, which finds the required line model. The `Code cell # 7 & 8` also shows the resulting image of these functions. 
+The line detection code could be found at `Code cell # 6, 7 & 8` of `Stage1_Pipeline_b.ipynb.ipynb` notebook. I implemented sliding windows algorithm and then implemented (alternative approach), smooth lanes detection algorithm. Sliding windows algorithm calculates the histogram on the X axis. First of all, I initialize left and right lanes with a `Lane()` class, as mentioned in the lessons. I find peaks from histogram and by sliding windows I collect pixels for left and right lane. Then I fit a second order polynomial for each of the lanes. The code can be found in function `get_sliding_windows()`, in `pipeline_helper_functions.py`, starting from `line # 243 to 414`. 
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-`Stage1_Pipeline_b.ipynb.ipynb` has implementation of this at `Code cell 9 & 10`. Here I have 2 functions, `measure_curvature_pixels()` & `get_RealRadiusOfCurvature()` to get values in meters. The result of this is executed on 1 example image, that can be found at `Code cell 9 & 10`.
+`Stage1_Pipeline_b.ipynb.ipynb` has implementation of this at `Code cell 8 & 9`. Here I have 2 functions, `measure_curvature_pixels()` & `get_realRadiusOfCurvature()` to get values in pixels & meters. The result of this is executed on 1 example image, that can be found at `Code cell 8 & 9`. In this notebook, I am using same image through out, therefore, left_fit and right_fit is used as hard coded for every step.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-`Stage1_Pipeline_b.ipynb.ipynb` has implementation of this at `Code cell 11& 12`. Here I have a function, `unwarp_image()` that get original_img, combined_img, left_fit, right_fit, src, dst values and gives unwarped image as output. The result of this is executed on 1 example image, that can be found at `Code cell 12` of `Stage1_Pipeline_b.ipynb.ipynb` notebook.
+`Stage1_Pipeline_b.ipynb.ipynb` has implementation of this at `Code cell 10& 11`. Here I have a function, `unwarp_image()` that get original_img, combined_img, left_fit, right_fit, src, dst values and gives unwarped image as output. The result of this is executed on 1 example image, that can be found at `Code cell 12` of `Stage1_Pipeline_b.ipynb.ipynb` notebook. I am using this `unwarp_image()` in `Stage1_Pipeline_c.ipynb.ipynb` to create the `pipeline()`, that is, executed for every frame of the video in next task. 
+
+One example image, as result of `unwarp_image()` from `Stage1_Pipeline_c.ipynb.ipynb` is below:
+![GitHub Logo](/output_images/test_img6.jpg)
 
 ---
 
