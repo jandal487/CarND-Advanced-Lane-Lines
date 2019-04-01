@@ -488,8 +488,8 @@ def visualize_smooth_lanes(smoothLanes, left_fitx, right_fitx, ploty):
     ## End visualization steps ##
 	
 def get_realRadiusOfCurvature(binary_warped, left_fit, right_fit):
-    ym_per_pix = 30/720 # meters per pixel in y dimension
-    xm_per_pix = 3.7/700 # meters per pixel in x dimension
+    ym_per_pix = 15/1000 # meters per pixel in y dimension
+    xm_per_pix = 3.7/1000 # meters per pixel in x dimension
     ploty = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0] )
     leftx = left_fit[0]*ploty**2 + left_fit[1]*ploty +left_fit[2]
     rightx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
@@ -506,8 +506,8 @@ def get_realRadiusOfCurvature(binary_warped, left_fit, right_fit):
     right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
     
     
-    left_lane_bottom = (left_fit[0]*y_eval)**2 + left_fit[0]*y_eval + left_fit[2]
-    right_lane_bottom = (right_fit[0]*y_eval)**2 + right_fit[0]*y_eval + right_fit[2]
+    left_lane_bottom = left_fit[0]*(y_eval**2) + left_fit[0]*y_eval + left_fit[2]
+    right_lane_bottom = right_fit[0]*(y_eval**2) + right_fit[0]*y_eval + right_fit[2]
     
     actualPosition = (left_lane_bottom + right_lane_bottom)/2
     
